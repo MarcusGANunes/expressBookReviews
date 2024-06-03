@@ -8,17 +8,17 @@ const public_users = express.Router();
 public_users.post("/register", (req,res) => {
   const { username, password } = req.body
   if (!username) {
-    res.status(400).json(JSON.stringify({message: 'Username is missing'}))
+    res.status(400).json(JSON.stringify(JSON.stringify({message: 'Username is missing'})))
   }
   else if (!password) {
-    res.status(400).json(JSON.stringify({message: 'Password is missing'}))
+    res.status(400).json(JSON.stringify(JSON.stringify({message: 'Password is missing'})))
   }
-  else if (users.some(user => user.hasOwnProperty(username))) {
-    res.status(400).json(JSON.stringify({message: 'Choose another username'}))
+  else if (users.some(user => user['username'] === username)) {
+    res.status(400).json(JSON.stringify(JSON.stringify({message: 'Choose another username'})))
   }
   else {
-    users.push({[username]: password})
-    return res.status(300).json({message: "User registered successfully"})
+    users.push({ username, password })
+    return res.status(300).json(JSON.stringify({message: "User registered successfully"}))
   }
 });
 
@@ -57,11 +57,8 @@ public_users.get('/title/:title',function (req, res) {
 //  Get book review
 public_users.get('/review/:isbn',function (req, res) {
   const isbn = req.params.isbn
-  let book_review = null
-  for(const book in books) {
-    if(books[book]['isbn'] === isbn) book_review = books[book]['review']
-  }
-  return res.status(300).json(JSON.stringify(book_review))
+  let book_reviews = books[isbn]['reviews']
+  return res.status(200).json(JSON.stringify(book_reviews))
 });
 
 module.exports.general = public_users;

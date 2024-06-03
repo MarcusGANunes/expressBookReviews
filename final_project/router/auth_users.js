@@ -18,15 +18,15 @@ const authenticatedUser = (username,password)=>{
 regd_users.post("/login", (req,res) => {
   const { username, password } = req.body
   if(!isValid(username)) {
-    return res.status(404).json(JSON.stringify({ message: 'Username is missing' }))
+    return res.status(404).json({ message: 'Username is missing' })
   }
   else if(authenticatedUser(username, password)){
     const accessToken = jwt.sign({ data: password }, 'access', { expiresIn: 60*60})
     req.session.authorization = { accessToken, username }
-    return res.status(200).json(JSON.stringify({ message: 'User successfully logged in' }))
+    return res.status(200).json({ message: 'User successfully logged in' })
   }
   else {
-    return res.status(404).json(JSON.stringify({ message: 'Credentials are incorrect' }))
+    return res.status(404).json({ message: 'Credentials are incorrect' })
   }
 });
 
@@ -37,7 +37,7 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
   username = req.session.authorization.username
   message = `Review ${books[isbn][username] ? 'modified' : 'created'} successfuly`
   books[isbn]['reviews'][username] = review
-  return res.status(200).json(JSON.stringify({ message, review }));
+  return res.status(200).json({ message, review })
 });
 
 // Delete a book review
@@ -45,7 +45,7 @@ regd_users.delete("/auth/deleteReview/:isbn", (req, res) => {
     isbn = req.params.isbn
     username = req.session.authorization.username
     delete books[isbn][username]
-    return res.status(200).json(JSON.stringify({ message: "Review deleted" }));
+    return res.status(200).json({ message: "Review deleted" })
   });
 
 
